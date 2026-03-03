@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cata de Puglia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1.5rem;
+      background: #f6f2eb;
+      color: #222;
+      line-height: 1.5;
+    }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+    h1, h2, h3, h4 {
+      margin-top: 1.2em;
+      margin-bottom: 0.4em;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.2rem;
+    }
+    h2 {
+      font-size: 1.4rem;
+      border-bottom: 2px solid #e0d3b8;
+      padding-bottom: 0.2rem;
+    }
+    h3 {
+      font-size: 1.15rem;
+      color: #7b4c24;
+    }
+    h4 {
+      font-size: 1rem;
+      color: #444;
+    }
+    p {
+      margin: 0.25rem 0 0.6rem 0;
+    }
+    blockquote {
+      margin: 0.4rem 0 0.9rem 0;
+      padding-left: 0.8rem;
+      border-left: 3px solid #e0c9a6;
+      font-size: 0.98rem;
+    }
+    ul {
+      margin: 0.3rem 0 0.7rem 1.2rem;
+      padding-left: 0.8rem;
+    }
+    .vino {
+      margin-top: 1.5rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed #e0d3b8;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      background: #f0e2c5;
+      color: #7b4c24;
+      margin-right: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+    .small {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .highlight {
+      background: #fff7dd;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .fs-btn {
+      font-size: 0.85rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: #7b4c24;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .fs-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="top-bar">
+    <h1>Chuleta Cata – Italia &amp; Puglia</h1>
+    <button class="fs-btn" onclick="toggleFullscreen()">⛶ Pantalla completa</button>
+  </div>
+  <p class="small">Texto pensado para leer o inspirarte durante la cata. Adáptalo y recorta lo que quieras.</p>
+
+  <!-- 1. INTRO GENERAL CATA -->
+  <h2>1. Intro general a la cata (tono informal)</h2>
+  <blockquote>
+    “Antes de meternos en Italia y en Puglia, vamos a situarnos un momento.  
+    Una <strong>cata de vinos</strong> no es un examen, es simplemente prestar un poco más de atención a lo que bebemos: mirar el vino, olerlo con calma y luego probarlo sin prisa.  
+    Aquí hemos venido a <strong>disfrutar</strong>, a comentar lo que nos sugiere cada vino y, si puede ser, a aprender alguna curiosidad por el camino.”
+  </blockquote>
+  <blockquote>
+    “La idea de hoy es muy sencilla:  
+    primero miramos el color, luego olemos, y por último lo probamos y comentamos. No hay respuestas correctas o incorrectas: si alguien dice ‘a mí me huele a gominola de fresa’, perfecto, eso también vale.”
+  </blockquote>
+
+  <!-- 2. ITALIA -->
+  <h2>2. Italia: contexto general</h2>
+  <blockquote>
+    “Italia es uno de los grandes países del vino del mundo, junto con Francia y España. Hay viñedos prácticamente de norte a sur, desde los Alpes hasta la punta de la ‘bota’.”
+  </blockquote>
+  <blockquote>
+    “En el <strong>norte</strong> encontramos zonas como Piamonte y Veneto, con vinos como Barolo, Barbaresco, Amarone o Prosecco: climas más frescos y vinos elegantes, con buena acidez.  
+    En el <strong>centro</strong>, la estrella es <strong>Toscana</strong>, con Chianti, Brunello y los llamados Supertoscanos, donde manda la uva Sangiovese.  
+    Y en el <strong>sur y las islas</strong> (Puglia, Sicilia, Campania, Cerdeña…) el clima es más cálido y mediterráneo, y los vinos suelen ser <strong>más potentes, más frutales y con más grado alcohólico</strong>.”
+  </blockquote>
+  <blockquote>
+    “Italia tiene <strong>cientos de uvas autóctonas</strong>. En tintos suenan nombres como Sangiovese, Nebbiolo o Barbera; en blancos, Pinot Grigio o Garganega.  
+    Y cuando bajamos al sur aparecen uvas menos conocidas pero muy interesantes: <strong>Aglianico, Primitivo, Negroamaro, Nero di Troia, Falanghina…</strong> que son las protagonistas de la cata de hoy.”
+  </blockquote>
+
+  <!-- 3. PUGLIA -->
+  <h2>3. De Italia a Puglia</h2>
+  <blockquote>
+    “Si miramos el mapa de Italia, nos vamos a fijar ahora en el <strong>‘tacón’ de la bota</strong>: esa franja de tierra entre el mar Adriático y el mar Jónico.  
+    Eso es <strong>Puglia</strong>, nuestro destino de hoy.”
+  </blockquote>
+  <blockquote>
+    “Puglia es una región muy mediterránea: muchísimo sol, viñedos relativamente cerca del mar, olivos por todas partes y pueblos blancos. Es una de las regiones que <strong>más vino produce en Italia</strong> y, durante muchos años, gran parte de ese vino se vendía a granel para dar color y cuerpo a vinos de otras zonas.”
+  </blockquote>
+  <blockquote>
+    “En los últimos años muchas bodegas han empezado a apostar por vinos con <strong>identidad propia</strong>, trabajando con sus uvas de siempre: <strong>Primitivo, Negroamaro, Nero di Troia, Malvasia Nera, Falanghina…</strong>  
+    Son vinos donde se nota el sol: <strong>mucha fruta madura, buena graduación y una sensación muy cálida y mediterránea</strong>.”
+  </blockquote>
+  <blockquote>
+    “Hoy vamos a hacer un pequeño viaje por ese sur italiano a través de <strong>cinco vinos</strong>, empezando por un blanco fresco y terminando con tintos cada vez más intensos.”
+  </blockquote>
+
+  <!-- 3.1 Historia y vino -->
+  <h3>3.1 Un poco de historia de Puglia… y cómo conecta con el vino</h3>
+
+  <blockquote>
+    “Puglia no solo es sol y mar; es una de las regiones con <strong>historia vinícola más antigua</strong> de Italia.  
+    Mucho antes de los romanos, ya los <strong>pueblos messapii y daunos</strong> cultivaban vides silvestres. Con la llegada de los <strong>griegos</strong>, la región vivió su primera edad dorada del vino: trajeron nuevas técnicas, nuevas variedades y la idea del vino como símbolo cultural.”
+  </blockquote>
+
+  <blockquote>
+    “Cuando Roma tomó el control, Puglia se convirtió en algo clave: un <strong>gran viñedo del Imperio</strong>. Desde Brindisi —conectado a Roma por la Vía Appia— se enviaban vinos y aceite al Mediterráneo entero.  
+    El clima cálido, la llanura fértil y los puertos abiertos hicieron que la región fuera perfecta para producir vino en cantidad y con mucha madurez.”
+  </blockquote>
+
+  <blockquote>
+    “Tras la caída de Roma, la región pasó por manos de bizantinos, longobardos, árabes y normandos. Cada uno dejó algo en la forma de trabajar la tierra: técnicas de riego, terrazas, conservación… El vino siguió siendo un producto cotidiano, un alimento más que un lujo.”
+  </blockquote>
+
+  <blockquote>
+    “En los siglos modernos, especialmente del XVII al XIX, Puglia se convirtió en un motor del vino europeo:  
+    muchos vinos del sur se enviaban al norte —e incluso a Francia— para <strong>dar color y cuerpo</strong> a vinos más ligeros.  
+    Esto creó la fama de que Puglia hacía vinos potentes, oscuros y ‘de sol’, algo que todavía se nota en variedades como el <strong>Primitivo</strong> o el <strong>Negroamaro</strong>.”
+  </blockquote>
+
+  <blockquote class="highlight">
+    “Y en los últimos 25–30 años llega la revolución: las bodegas dejan atrás el granel y apuestan por vinos de identidad.  
+    Uvas antiguas, técnicas modernas, madurez mediterránea…  
+    Esa mezcla de <strong>historia + sol + tradición + modernidad</strong> es lo que hoy define a los vinos de Puglia.  
+    Cada copa es un pedazo de esa historia.”
+  </blockquote>
+
+  <!-- 3.2 TRULLI + VALLE D'ITRIA -->
+  <h3>3.2 Los trulli y el Valle d’Itria: la postal que también habla de vino</h3>
+
+  <blockquote>
+    “Sí, el <strong>Valle d’Itria</strong> está en Puglia, en su zona central.  
+    Es la tierra de los <strong>trulli</strong>, esas casitas de piedra con <strong>tejado cónico</strong> construidas en <strong>piedra seca</strong> (sin mortero), muy típicas del paisaje rural de la región.”
+  </blockquote>
+
+  <blockquote>
+    “No los creó un arquitecto famoso: los levantaron <strong>campesinos y comunidades locales</strong> como una solución práctica y adaptada al clima y a la piedra caliza de la zona.  
+    Y existe una historia muy popular que dice que, al estar hechos sin mortero, podían <strong>desmontarse rápido</strong> ante ciertos controles o impuestos de la época.”
+  </blockquote>
+
+  <blockquote class="highlight">
+    “Para la cata, este paisaje es oro visual:  
+    <strong>tradición rural + territorio + suelos calcáreos + sol mediterráneo</strong>.  
+    Una manera muy bonita de entender por qué muchos vinos del Valle d’Itria combinan identidad local con una frescura sorprendente dentro del sur italiano.”
+  </blockquote>
+
+
+  <!-- 3.3 RESUMEN TÉCNICO RÁPIDO -->
+  <h3>3.3 Puglia en modo resumen (para tener los datos clave a mano)</h3>
+
+  <blockquote>
+    “Puglia se localiza al sur de la península italiana, en el <strong>tacón de la bota</strong>.  
+    Sus vinos suelen ser de <strong>colores intensos</strong>, con <strong>baja acidez</strong> y <strong>alta graduación alcohólica</strong>, y un buen extracto seco: es el estilo típico de un sur muy soleado.”
+  </blockquote>
+
+  <blockquote>
+    “Se habla de unas <strong>105.000 hectáreas</strong> de viñedo en Puglia.  
+    Aproximadamente el <strong>92%</strong> está en zonas llanas, y el resto en áreas montañosas.”
+  </blockquote>
+
+  <blockquote>
+    “Los sistemas de cultivo más habituales incluyen <strong>Tendone</strong>, <strong>Guyot</strong>, <strong>Cordone Speronato</strong> y el <strong>Alberello Pugliese</strong>, bastante extendido en la región.”
+  </blockquote>
+
+  <blockquote>
+    “A nivel de variedades, el peso está claramente en las tintas:  
+    alrededor del <strong>82%</strong> de las vides cultivadas son <strong>uvas negras</strong>, muchas de origen griego.  
+    La más común es la <strong>Negroamaro</strong>, seguida de la <strong>Primitivo</strong>, autóctona y relacionada con la <strong>Zinfandel</strong> americana.”
+  </blockquote>
+
+  <blockquote>
+    “Entre otras uvas de Puglia encontramos <strong>Bombino</strong> blanco y negro, <strong>Trebbiano toscano</strong>, <strong>Uva di Troia</strong>, <strong>Sangiovese</strong> y <strong>Montepulciano</strong>, especialmente en áreas del norte de Bari.”
+  </blockquote>
+
+  <blockquote>
+    “En el <strong>Valle d’Itria</strong> destacan blancas como <strong>Verdeca</strong> y <strong>Bianco d’Alessano</strong>.  
+    Y en las provincias más al sur, como <strong>Taranto</strong> y <strong>Lecce</strong>, dominan las clásicas tintas de la región: <strong>Negroamaro</strong>, <strong>Primitivo</strong> y <strong>Malvasía Nera</strong>.”
+  </blockquote>
+
+  <blockquote class="highlight">
+    “El <strong>renacimiento moderno</strong> del vino de Puglia se aceleró a finales de los 2000,  
+    cuando los productores locales empezaron a poner en valor sus variedades tradicionales y a embotellar vinos con identidad propia.”
+  </blockquote>
+
+  <blockquote>
+    “En cuanto a denominaciones, en Puglia se ubican <strong>4 DOCG/DOP</strong>, <strong>28 DOC/DOP</strong> y <strong>6 IGT/IGP</strong>.”
+  </blockquote>
+
+
+  <h4>Mini guía de siglas italianas</h4>
+  <p><strong>IGT</strong> (<em>Indicazione Geografica Tipica</em>): indicación geográfica amplia con normas más flexibles sobre uvas y estilos.</p>
+  <p><strong>IGP</strong> (<em>Indicazione Geografica Protetta</em>): equivalente europeo de IGT; en la práctica, <strong>IGT ≈ IGP</strong>.</p>
+  <p><strong>DOC</strong> (<em>Denominazione di Origine Controllata</em>): denominación con reglas más estrictas de zona, uvas y estilo.</p>
+  <p><strong>DOP</strong> (<em>Denominazione di Origine Protetta</em>): categoría europea de origen protegido que engloba DOC (y DOCG) dentro del sistema UE.</p>
+  <p><strong>DOCG</strong> (<em>Denominazione di Origine Controllata e Garantita</em>): nivel tradicional más alto en Italia, con controles y requisitos más exigentes.</p>
+
+
+
+
+  <!-- 4. VINO 1 -->
+  <div class="vino">
+    <h2>4. Vino 1 – Favugnë Falanghina Bianco 2024 (Cantine Teanum)</h2>
+    <span class="tag">Blanco</span>
+    <span class="tag">Falanghina</span>
+    <span class="tag">Puglia (norte)</span>
+
+    <h3>Cómo presentarlo en la copa</h3>
+    <blockquote>
+      “Empezamos con un <strong>blanco</strong> de Falanghina, una uva histórica del sur de Italia.  
+      Es un vino muy fresco, con aromas de <strong>cítricos, flores blancas y un toque herbal</strong> que recuerda bastante al paisaje mediterráneo.”
+    </blockquote>
+    <blockquote>
+      “En boca es <strong>ligero</strong>, con buena acidez y un final casi salino, muy fácil de beber.  
+      Es perfecto como puerta de entrada a la cata: limpia el paladar y abre el apetito para lo que viene después.”
+    </blockquote>
+
+    <h3>Un poco de bodega (Cantine Teanum)</h3>
+    <p>• Cantine Teanum está en el norte de Puglia, en la zona de Foggia.</p>
+    <p>• Proyecto relativamente joven (años 2000) que recupera una antigua bodega de vino a granel y la transforma en bodega moderna de vino embotellado.</p>
+    <p>• Trabajan varias fincas en la zona, combinando uvas locales y estilos más internacionales.</p>
+
+    <h3>Sobre la uva Falanghina</h3>
+    <p>• Uva blanca muy antigua del sur de Italia (sobre todo Campania y Puglia).</p>
+    <p>• Estuvo bastante olvidada y ha vuelto a ponerse de moda en las últimas décadas.</p>
+    <p>• Da vinos aromáticos y frescos, con cítricos, manzana verde, flores blancas y, según la zona, un toque mineral o salino.</p>
+
+    <h3>Vinificación y crianza</h3>
+    <p>• Uva vendimiada a mano y prensado suave para evitar amargores de pieles y pepitas.</p>
+    <p>• Fermentación alcohólica en depósitos de acero inoxidable a baja temperatura (≈14 ºC) para conservar los aromas cítricos y florales.</p>
+    <p>• No tiene crianza en barrica: se afina en depósitos de acero y después en botella, lo que refuerza el estilo fresco y directo del vino.</p>
+
+    <h3>Curiosidad para soltar</h3>
+    <blockquote class="highlight">
+      “Se cree que la Falanghina podría haber estado relacionada con algunos vinos muy prestigiosos de la época romana, como el famoso Falerno.  
+      Además, el nombre <em>Falanghina</em> se cree que viene de la palabra latina <em>falangae</em>, que eran las estacas de madera con las que se sujetaban las viñas, o sea, la uva ‘criada en palos’.  
+      Así que, aunque el estilo del vino es moderno y fresco, detrás hay una uva con muchísima historia.”
+    </blockquote>
+  </div>
+
+  <!-- 5. VINO 2 -->
+  <div class="vino">
+    <h2>5. Vino 2 – Montepulciano d’Abruzzo Riserva “Terre della Brunda” (Botter)</h2>
+    <span class="tag">Tinto</span>
+    <span class="tag">Montepulciano</span>
+    <span class="tag">Abruzzo</span>
+    <span class="tag">Riserva</span>
+
+    <h3>Cómo presentarlo en la copa</h3>
+    <blockquote>
+      “Ahora pasamos a un <strong>tinto reserva de Montepulciano</strong>.  
+      Nos movemos hacia el centro de Italia, a Abruzzo, pero sigue dentro de ese estilo mediterráneo y gastronómico.”
+    </blockquote>
+    <blockquote>
+      “La uva Montepulciano da vinos con <strong>más estructura</strong>: aquí encontramos fruta roja madura, notas de especias y un toque de madera.  
+      En boca es más serio: tiene tanino, buena profundidad y un final largo.  
+      Es un vino que encaja muy bien con platos con más intensidad y que nos sirve como puente entre el blanco inicial y los tintos del sur que vienen después.”
+    </blockquote>
+
+    <h3>Un poco de bodega (Botter)</h3>
+    <p>• Bodega familiar fundada en 1928 cerca de Venecia.</p>
+    <p>• Empezaron con vino a granel y hoy son una de las grandes casas italianas en exportación, trabajando con varias regiones (Veneto, Abruzzo, Puglia, etc.).</p>
+    <p>• Siguen siendo empresa familiar, ya en tercera/cuarta generación, con fuerte presencia internacional.</p>
+
+    <h3>Sobre la uva Montepulciano</h3>
+    <p>• Uva tinta muy importante en Abruzzo y otras zonas del centro-sur de Italia.</p>
+    <p>• Da vinos de color muy intenso, con fruta roja y negra madura y taninos amables.</p>
+    <p>• Suelen ser vinos de cuerpo medio-alto, muy gastronómicos y fáciles de beber con comida.</p>
+
+    <h3>Vinificación y crianza</h3>
+    <p>• Fermentación clásica de tinto en depósitos de acero inoxidable, con maceración prolongada con las pieles para extraer color y estructura.</p>
+    <p>• Después realiza la fermentación maloláctica para redondear la acidez y suavizar los taninos.</p>
+    <p>• Cumple con las exigencias de la DOC como Riserva: al menos 2 años de crianza total, de los que un mínimo de 9 meses son en madera de roble, lo que explica el equilibrio entre fruta madura y notas de especias y madera integradas.</p>
+    <p class="small">*Puedes matizar que son requisitos del pliego de la DOC, no detalles exactos de la receta de bodega.</p>
+
+    <h3>Curiosidad para soltar</h3>
+    <blockquote class="highlight">
+      “Importante: no confundir <strong>Montepulciano d’Abruzzo</strong> con <strong>Vino Nobile di Montepulciano</strong>.  
+      Uno es este tinto de Abruzzo hecho con uva Montepulciano; el otro es un vino de Toscana hecho sobre todo con Sangiovese. Comparten nombre, pero no estilo.”
+    </blockquote>
+  </div>
+
+  <!-- 6. VINO 3 -->
+  <div class="vino">
+    <h2>6. Vino 3 – Triplico Multiplo 2023 (Botter, Puglia IGT)</h2>
+    <span class="tag">Tinto</span>
+    <span class="tag">Coupage</span>
+    <span class="tag">Puglia IGT</span>
+
+    <h3>Cómo presentarlo en la copa</h3>
+    <blockquote>
+      “Con el <strong>Triplico Multiplo</strong> volvemos a Puglia con un tinto elaborado a partir de <strong>varias uvas locales</strong> del sur de Italia.  
+      Es un vino muy mediterráneo: mucha <strong>fruta negra, notas de especias y sensación de sol</strong> en la copa.”
+    </blockquote>
+    <blockquote>
+      “En boca es <strong>redondo y amable</strong>: tiene madurez y presencia, pero sin resultar pesado.  
+      Es como un resumen de Puglia en versión ‘vino de disfrute’, ideal para seguir subiendo la intensidad sin asustar al paladar.”
+    </blockquote>
+
+    <h3>Un poco de bodega</h3>
+    <p>• También elaborado por Botter, dentro de su línea de vinos del sur.</p>
+    <p>• Vino pensado para mostrar Puglia de forma muy accesible: mucha fruta, color, taninos pulidos y estilo muy gastronómico.</p>
+
+    <h3>Sobre las uvas del coupage</h3>
+    <p>Según añada, combina uvas autóctonas de Puglia como:</p>
+    <ul>
+      <li><strong>Primitivo</strong> – fruta madura, volumen y grado.</li>
+      <li><strong>Negroamaro</strong> – color oscuro, parte más oscura y mediterránea.</li>
+      <li><strong>Nero di Troia</strong> – estructura y tanino.</li>
+      <li><strong>Malvasia Nera</strong> – fruta y suavidad.</li>
+    </ul>
+
+    <h3>Vinificación y crianza</h3>
+    <p>• Fermentación en depósitos de acero inoxidable con buena maceración para extraer color, fruta y estructura.</p>
+    <p>• Fermentación maloláctica completa para redondear la textura y suavizar la sensación de acidez.</p>
+    <p>• Crianza parcial en contacto con roble (barricas o roble alternativo), que aporta notas de especias dulces y cacao junto a la fruta negra madura.</p>
+
+    <h3>Curiosidad para soltar</h3>
+    <blockquote class="highlight">
+      “El propio nombre del vino, <strong>Triplico / Multiplo</strong>, juega con la idea de ‘tres’ y de mezcla: varias uvas, varias fincas, muchas capas de sabor.  
+      Es uno de esos vinos del sur que suelen recibir puntuaciones muy altas en guías italianas y que tienen una relación placer/precio muy interesante.”
+    </blockquote>
+  </div>
+
+  <!-- 7. VINO 4 -->
+  <div class="vino">
+    <h2>7. Vino 4 – Lupo Meraviglia “Tre di Tre” 2023 (Puglia IGT)</h2>
+    <span class="tag">Tinto</span>
+    <span class="tag">Primitivo</span>
+    <span class="tag">Negroamaro</span>
+    <span class="tag">Aglianico</span>
+
+    <h3>Cómo presentarlo en la copa</h3>
+    <blockquote>
+      “El <strong>Lupo Meraviglia Tre di Tre</strong> es un paso más en intensidad.  
+      También viene de Puglia y mezcla varias uvas tintas del sur, con una técnica llamada <strong>‘salasso’</strong>, que consiste en retirar parte del mosto al principio de la maceración para <strong>concentrar color y cuerpo</strong>.”
+    </blockquote>
+    <blockquote>
+      “En nariz tenemos <strong>fruta muy madura, notas balsámicas y toques de madera</strong>; el color es muy cubierto, casi tinta.  
+      En boca es <strong>potente, con mucho volumen y un carácter muy marcado</strong>, de esos vinos que piden carne, guisos y conversación larga.”
+    </blockquote>
+
+    <h3>Un poco de proyecto / marca</h3>
+    <p>• <strong>Lupo Meraviglia</strong> es una marca centrada en Puglia, con la imagen del lobo bajo el árbol, inspirada en el escudo de Lecce.</p>
+    <p>• Proyecto ligado a Botter, pero con personalidad propia y con vinos muy puntuados en guías italianas.</p>
+
+    <h3>Sobre las uvas: Negroamaro, Aglianico y Primitivo</h3>
+    <ul>
+      <li><strong>Negroamaro</strong> – uva emblemática de Puglia, da color oscuro, fruta negra y un carácter ligeramente amargo-terroso.</li>
+      <li><strong>Aglianico</strong> – considerada a veces el “Barolo del sur”; aporta tanino, estructura y capacidad de guarda.</li>
+      <li><strong>Primitivo</strong> – uva estrella de Puglia, la misma variedad que la Zinfandel; mucha fruta madura y grado alcohólico alto.</li>
+    </ul>
+
+    <h3>Vinificación y crianza</h3>
+    <p>• Las tres uvas se vendimian escalonadas y se vinifican con la técnica del “salasso”: se retira parte del mosto al inicio de la maceración para concentrar color, tanino y aromas.</p>
+    <p>• Fermentación en depósitos con control de temperatura y maloláctica completa.</p>
+    <p>• No tiene una crianza larga en barrica: se afina principalmente en depósitos, de modo que la potencia viene sobre todo de la concentración de la uva y del salasso, más que de la madera.</p>
+
+    <h3>Curiosidad para soltar</h3>
+    <blockquote class="highlight">
+      “El nombre <strong>Tre di Tre</strong> juega con la idea de ‘tres de tres’: tres uvas, tres capas, todo al máximo.  
+      Y la técnica del <strong>salasso</strong> refuerza ese estilo concentrado: se retira parte del líquido al principio, y lo que queda en el depósito está todavía más cargado de color y sabor.”
+    </blockquote>
+  </div>
+
+  <!-- 8. VINO 5 -->
+  <div class="vino">
+    <h2>8. Vino 5 – Cinquenoci Primitivo 2023 (Masseria Tagaro)</h2>
+    <span class="tag">Tinto</span>
+    <span class="tag">Primitivo</span>
+    <span class="tag">Puglia IGP</span>
+    <span class="tag">Valle d’Itria</span>
+
+    <h3>Cómo presentarlo en la copa</h3>
+    <blockquote>
+      “Cerramos la cata con el <strong>Cinquenoci Primitivo</strong>, probablemente el vino más intenso de todos.  
+      La uva Primitivo es famosa por dar vinos <strong>cálidos, con alta graduación y mucha fruta madura</strong>, a veces casi de mermelada.”
+    </blockquote>
+    <blockquote>
+      “Aquí tenemos un tinto muy mediterráneo: <strong>cuerpo, dulzor de fruta, notas de madera y un final largo y envolvente</strong>.  
+      Es el vino perfecto para terminar el viaje por Puglia con algo potente, reconfortante y muy de sobremesa.”
+    </blockquote>
+
+    <h3>Un poco de bodega (Masseria Tagaro)</h3>
+    <p>• Bodega familiar situada en la <strong>Valle d’Itria</strong>, una de las zonas más bonitas de Puglia, llena de trulli y suelos calcáreos.</p>
+    <p>• Varias generaciones de la misma familia trabajando la viña, combinando la masseria tradicional con una visión moderna del vino.</p>
+    <p>• Ejemplo de la “pequeña revolución” de calidad en Puglia: de vender vino local a embotellar referencias que viajan por el mundo.</p>
+
+    <h3>Sobre la uva Primitivo</h3>
+    <p>• Gran uva tinta de Puglia, genéticamente la misma variedad que la <strong>Zinfandel</strong> de California y la Tribidrag croata.</p>
+    <p>• Da vinos con mucho color, alto grado y fruta muy madura (ciruela, moras, mermelada), con especias dulces y a veces notas de tabaco dulce.</p>
+
+    <h3>Vinificación y crianza</h3>
+    <p>• La uva se despalilla (se separan los granos de los raspones) antes de fermentar.</p>
+    <p>• Maceración prefermentativa en frío (4–5 ºC durante unas 48 horas) para potenciar color y aromas de fruta madura sin extraer demasiado tanino duro.</p>
+    <p>• Posterior fermentación alcohólica con levaduras seleccionadas y maceración más larga para dar estructura, seguida de fermentación maloláctica.</p>
+    <p>• El vino pasa unos 6 meses en barricas de roble y al menos 3 meses en botella, lo que explica ese perfil de fruta muy madura, notas de confitura y especias dulces bien integradas.</p>
+
+    <h3>Curiosidad para soltar</h3>
+    <blockquote class="highlight">
+      “El Cinquenoci es un claro ejemplo de lo que se llama un <strong>‘vino de sol’</strong>: viñas muy soleadas, uva muy madura y un estilo cálido, potente y envolvente.  
+      Es el tipo de vino que pide <strong>carne, guisos y sobremesa larga</strong>, y por eso lo usamos para cerrar la cata por todo lo alto.”
+    </blockquote>
+  </div>
+
+  <!-- 9. GLOSARIO -->
+  <h2>9. Glosario rápido (por si sale la conversación)</h2>
+
+  <h3>¿Qué es el <em>salasso</em>?</h3>
+  <p>
+    Es una técnica de vinificación en tinto también llamada <em>saignée</em> o “sangrado”.
+    Al principio de la maceración se retira (“se sangra”) una parte del mosto del depósito.
+    Al quitar líquido, aumenta la proporción de pieles respecto al zumo y el vino que queda
+    se vuelve más <strong>concentrado en color, cuerpo y sabor</strong>. La parte sangrada
+    a veces se utiliza para elaborar vinos rosados.
+  </p>
+
+  <h3>¿Qué es la fermentación maloláctica?</h3>
+  <p>
+    Es una <strong>segunda fermentación</strong> que se hace sobre todo en los vinos tintos
+    (y en algunos blancos con crianza). En ella, bacterias lácticas transforman el
+    <strong>ácido málico</strong> (más punzante, tipo manzana verde) en
+    <strong>ácido láctico</strong> (más suave, tipo yogur). El resultado es un vino con
+    la acidez más redondeada, una sensación de boca más cremosa y taninos más suaves.
+  </p>
+
+  <h3>¿Qué es el despalillado?</h3>
+  <p>
+    El despalillado consiste en separar los <strong>raspones</strong> (los palitos verdes
+    del racimo) de los granos de uva antes de la fermentación. Si se fermenta con muchos
+    raspones, estos pueden aportar <strong>amargor y taninos verdes</strong>. Al despalillar,
+    se trabaja sobre todo con pulpa y piel, y se obtienen vinos más <strong>frutales, limpios
+    y con tanino menos agresivo</strong>.
+  </p>
+
+</main>
+
+<script>
+  function toggleFullscreen() {
+    const btn = document.querySelector('.fs-btn');
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => console.warn(err));
+      if (btn) btn.textContent = '✕ Salir pantalla completa';
+    } else {
+      document.exitFullscreen();
+      if (btn) btn.textContent = '⛶ Pantalla completa';
+    }
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    const btn = document.querySelector('.fs-btn');
+    if (!btn) return;
+    if (document.fullscreenElement) {
+      btn.textContent = '✕ Salir pantalla completa';
+    } else {
+      btn.textContent = '⛶ Pantalla completa';
+    }
+  });
+</script>
+</body>
+</html>
