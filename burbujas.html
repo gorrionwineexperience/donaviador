@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Bubble Pop de Aromas · Demo Mobile</title>
+  <title>Bubble Pop de Aromas · Vinos Argentinos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <style>
@@ -150,6 +150,7 @@
       display:flex;
       gap:6px;
       align-items:center;
+      flex-wrap:wrap;
     }
     .hud-chip{
       padding:3px 8px;
@@ -168,6 +169,8 @@
       display:flex;
       gap:6px;
       font-size:.8rem;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
     .score-chip{
       padding:3px 7px;
@@ -209,12 +212,9 @@
       box-shadow:0 8px 18px rgba(0,0,0,.65);
       cursor:pointer;
       user-select:none;
-      /* color base neutro, se sobrescribe por JS con colores aleatorios */
       background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.96), rgba(255,255,255,.25));
       border:1px solid rgba(255,255,255,.65);
     }
-    .bubble.good{}
-    .bubble.bad{}
     .bubble.pop{
       animation:pop .18s ease-out forwards;
     }
@@ -335,6 +335,7 @@
       display:flex;
       justify-content:flex-end;
       gap:8px;
+      flex-wrap:wrap;
     }
     .chip{
       display:inline-flex;
@@ -367,7 +368,7 @@
         <div class="titleWrap">
           <h1>Bubble Pop de Aromas</h1>
           <div class="subtitle">
-            Revienta solo las burbujas con aromas que vayan bien con cada vino. 🫧🍷
+            Revienta solo las burbujas con aromas que vayan bien con estos vinos argentinos. 🫧🍷🇦🇷
           </div>
         </div>
       </div>
@@ -385,18 +386,18 @@
       <div class="wine-row">
         <div style="flex:1;">
           <select id="wineSelect" class="wine-select">
-            <option value="falanghina">1 · Favugnë Falanghina Bianco</option>
-            <option value="montepulciano">2 · Montepulciano d’Abruzzo Riserva</option>
-            <option value="lupo">3 · Lupo Meraviglia Tre di Tre</option>
-            <option value="cinquenoci">4 · Cinquenoci Primitivo</option>
-            <option value="triplico">5 · Triplico Multiplo</option>
+            <option value="lalinda_chardonnay">1 · La Linda Chardonnay</option>
+            <option value="alamos_rose">2 · Alamos Malbec Rosado</option>
+            <option value="alamos_cab">3 · Alamos Cabernet Sauvignon</option>
+            <option value="lalinda_malbec">4 · La Linda Malbec</option>
+            <option value="finmundo_pinot">5 · Reserva Fin del Mundo Pinot Noir</option>
           </select>
           <div id="wineInfo" class="wine-info">
-            Blanco fresco con notas cítricas, florales y toque mineral. Ideal para aromas ligeros y vibrantes.
+            Blanco mendocino fresco y expresivo, con fruta blanca, cítricos y perfil floral-mineral.
           </div>
           <div id="wineTags" class="tag">
             <span>🎯 Aromas clave:</span>
-            <b>Cítrico, floral, mineral, fruta blanca</b>
+            <b>Fruta blanca, cítrico, floral, mineral</b>
           </div>
         </div>
       </div>
@@ -405,7 +406,7 @@
         <div class="hud">
           <div class="hud-left">
             <div class="hud-chip">
-              Vino actual: <strong id="wineShort">Falanghina</strong>
+              Vino actual: <strong id="wineShort">La Linda Chardonnay</strong>
             </div>
             <div class="hud-chip">
               Tiempo: <span id="timer" class="timer">00:30</span>
@@ -421,7 +422,7 @@
         <div id="playfield"></div>
 
         <div id="statusText" class="status">
-          Pulsa “Empezar” y revienta solo las burbujas con aromas que encajen con el vino seleccionado.
+          Pulsa “Empezar” y revienta solo las burbujas con aromas que encajen con el vino argentino seleccionado.
         </div>
 
         <div class="btn-row">
@@ -447,7 +448,7 @@
       <div class="overlay-body" id="finalStats"></div>
       <div class="overlay-actions">
         <button id="closeOverlayBtn">Cerrar</button>
-        <button id="restartOverlayBtn" class="primary">Jugar con otro vino</button>
+        <button id="restartOverlayBtn" class="primary">Jugar otro vino</button>
       </div>
       <div class="small">
         <div class="chip good">✅ Aciertos = burbujas de aroma correcto</div>
@@ -481,7 +482,6 @@
   const isHost = qs.get("host") === "1";
   const isDashboard = qs.get("dashboard") === "1";
 
-  // Invitados: seguir miniGames/currentScreen
   if(!isHost && !isDashboard){
     const screenRef = ref(db, "miniGames/currentScreen");
     onValue(screenRef, (snap) => {
@@ -493,7 +493,6 @@
           window.location.href = "index.html";
         }
       }else if(screen === "bubbles"){
-        // Nos quedamos en este juego
         return;
       }else if(screen === "linea"){
         if(!current.includes("linea")){
@@ -526,53 +525,59 @@
     const SPAWN_INTERVAL_SEC = 0.7;
     const SPEED_PX_PER_SEC = 95;
 
-    const WINE_ORDER = ["falanghina","montepulciano","lupo","cinquenoci","triplico"];
+    const WINE_ORDER = [
+      "lalinda_chardonnay",
+      "alamos_rose",
+      "alamos_cab",
+      "lalinda_malbec",
+      "finmundo_pinot"
+    ];
 
     const wines = {
-      falanghina: {
-        id: "falanghina",
-        short: "Falanghina",
+      lalinda_chardonnay: {
+        id: "lalinda_chardonnay",
+        short: "La Linda Chardonnay",
         color: "blanco",
-        grapes: "Falanghina",
-        goodKeys: ["citrico","floral","mineral","fruta_blanca"],
-        description: "Blanco fresco, cítrico y floral, con toque mineral y fruta blanca.",
-        tags: "Cítrico, floral, mineral, fruta blanca"
+        grapes: "Chardonnay",
+        goodKeys: ["fruta_blanca","citrico","floral","mineral"],
+        description: "Blanco mendocino fresco y expresivo, con fruta blanca, cítricos y perfil floral-mineral.",
+        tags: "Fruta blanca, cítrico, floral, mineral"
       },
-      montepulciano: {
-        id: "montepulciano",
-        short: "Montepulciano",
-        color: "tinto",
-        grapes: "Montepulciano d’Abruzzo",
-        goodKeys: ["fruta_negra","mermelada","especia_dulce","hierbas"],
-        description: "Tinto reserva con fruta negra, especias dulces y toque de hierbas mediterráneas.",
-        tags: "Fruta negra, mermelada, especia dulce, hierbas"
+      alamos_rose: {
+        id: "alamos_rose",
+        short: "Alamos Malbec Rosado",
+        color: "rosado",
+        grapes: "Malbec",
+        goodKeys: ["fruta_roja","floral","citrico","hierbas"],
+        description: "Rosado de Malbec fresco y ligero, con cereza, frutilla, rosas y un toque cítrico/herbal.",
+        tags: "Fruta roja, floral, cítrico, hierbas"
       },
-      lupo: {
-        id: "lupo",
-        short: "Lupo Meraviglia",
+      alamos_cab: {
+        id: "alamos_cab",
+        short: "Alamos Cabernet Sauvignon",
         color: "tinto",
-        grapes: "Negroamaro, Malvasia Nera",
-        goodKeys: ["fruta_negra","mermelada","chocolate","cafe"],
-        description: "Tinto potente y estructurado, con capas de fruta negra, mermelada y notas de cacao/tostado.",
-        tags: "Fruta negra, mermelada, chocolate, café/tostado"
+        grapes: "Cabernet Sauvignon",
+        goodKeys: ["fruta_negra","especia_dulce","pimienta","hierbas"],
+        description: "Cabernet mendocino con cereza negra, mora, clavo, pimienta negra y fondo herbal.",
+        tags: "Fruta negra, especia dulce, pimienta, hierbas"
       },
-      cinquenoci: {
-        id: "cinquenoci",
-        short: "Cinquenoci",
+      lalinda_malbec: {
+        id: "lalinda_malbec",
+        short: "La Linda Malbec",
         color: "tinto",
-        grapes: "Primitivo",
-        goodKeys: ["fruta_roja","fruta_negra","mermelada","especia_dulce","caramelo"],
-        description: "Primitivo cálido, frutal y algo goloso, con fruta roja/negra, mermelada y especia dulce.",
-        tags: "Fruta roja, fruta negra, mermelada, especia dulce, caramelo"
+        grapes: "Malbec",
+        goodKeys: ["fruta_roja","fruta_negra","floral","especia_dulce"],
+        description: "Malbec jugoso y amable, con cereza, frutilla, ciruela, notas florales y especia suave.",
+        tags: "Fruta roja, fruta negra, floral, especia dulce"
       },
-      triplico: {
-        id: "triplico",
-        short: "Triplico Multiplo",
+      finmundo_pinot: {
+        id: "finmundo_pinot",
+        short: "Reserva Fin del Mundo Pinot Noir",
         color: "tinto",
-        grapes: "Blend tinto",
-        goodKeys: ["fruta_roja","fruta_negra","hierbas","especia_dulce"],
-        description: "Tinto joven y amable, con fruta roja/negra, toque de hierbas y especia dulce suave.",
-        tags: "Fruta roja, fruta negra, hierbas mediterráneas, especia suave"
+        grapes: "Pinot Noir",
+        goodKeys: ["fruta_roja","floral","ahumado","especia_dulce"],
+        description: "Pinot Noir patagónico elegante, con cereza y frambuesa, perfil delicado floral y sutiles notas ahumadas.",
+        tags: "Fruta roja, floral, ahumado, especia suave"
       }
     };
 
@@ -580,12 +585,12 @@
       { label:"Cítrico 🍋", key:"citrico" },
       { label:"Floral 🌸", key:"floral" },
       { label:"Salino / mineral 🧂", key:"mineral" },
-      { label:"Fruta blanca 🍏", key:"fruta_blanca" },
+      { label:"Fruta blanca 🍐", key:"fruta_blanca" },
       { label:"Fruta roja 🍓", key:"fruta_roja" },
       { label:"Fruta negra 🍇", key:"fruta_negra" },
       { label:"Mermelada / compota 🍒", key:"mermelada" },
       { label:"Especia dulce 🌶️", key:"especia_dulce" },
-      { label:"Hierbas mediterráneas 🌿", key:"hierbas" },
+      { label:"Hierbas 🌿", key:"hierbas" },
       { label:"Chocolate 🍫", key:"chocolate" },
       { label:"Café / tostado ☕", key:"cafe" },
       { label:"Vainilla 🍨", key:"vainilla" },
@@ -615,21 +620,21 @@
     let mistakes = 0;
     let missed = 0;
 
-    let currentWineId = "falanghina";
+    let currentWineId = "lalinda_chardonnay";
     let wineResults = {};
     let winePlayed = {
-      falanghina:false,
-      montepulciano:false,
-      lupo:false,
-      cinquenoci:false,
-      triplico:false
+      lalinda_chardonnay:false,
+      alamos_rose:false,
+      alamos_cab:false,
+      lalinda_malbec:false,
+      finmundo_pinot:false
     };
 
     function showToast(msg){
       toastEl.textContent = msg;
       toastEl.classList.add("show");
       clearTimeout(showToast._t);
-      toastEl._t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+      showToast._t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
     }
 
     function formatTime(ms){
@@ -686,7 +691,6 @@
       bubble.dataset.key = chosen.key;
       bubble.dataset.good = w.goodKeys.includes(chosen.key) ? "1" : "0";
 
-      // Colores aleatorios: no indican si el aroma es correcto o no
       applyRandomBubbleColor(bubble);
 
       const fieldRect = playfield.getBoundingClientRect();
@@ -732,7 +736,7 @@
     }
 
     function buildFinalSummaryHTML(){
-      let html = "Resumen de tus 5 vinos jugados:<br><br>";
+      let html = "Resumen de tus 5 vinos argentinos jugados:<br><br>";
       const ids = WINE_ORDER;
       ids.forEach(id => {
         const w = wines[id];
@@ -797,7 +801,6 @@
         accuracy
       };
 
-      // Guardar resumen agregado de la sesión en Firebase
       try{
         const all = Object.values(wineResults || {});
         const winesPlayed = all.length;
@@ -833,7 +836,7 @@
       updateWineAvailabilityUI();
 
       let nivel;
-      if(score >= 12) nivel = "Sniper aromático 🫧🍋";
+      if(score >= 12) nivel = "Sniper aromático argentino 🫧🇦🇷";
       else if(score >= 7) nivel = "Muy buena puntería 😏";
       else if(score >= 3) nivel = "Puntería curiosa 👀";
       else nivel = "Todavía calentando dedo 😄";
@@ -841,18 +844,17 @@
       const remaining = Object.keys(wines).filter(id => !winePlayed[id]);
 
       if(remaining.length === 0){
-        // Resumen final de todos los vinos
         document.querySelector(".overlay-title").textContent = "Resumen final de tus 5 vinos";
-        document.querySelector(".overlay-sub").textContent = "Puntuaciones de tu Bubble Pop de Aromas.";
+        document.querySelector(".overlay-sub").textContent = "Puntuaciones de tu Bubble Pop de Aromas argentino.";
         finalStatsEl.innerHTML = buildFinalSummaryHTML();
         restartOverlayBtn.style.display = "none";
-        statusText.textContent = "Has completado los 5 vinos. Resultados listos para el dashboard. 🥳";
+        statusText.textContent = "Has completado los 5 vinos argentinos. Resultados listos para el dashboard. 🥳";
       }else{
         document.querySelector(".overlay-title").textContent = "Fin de la partida";
-        document.querySelector(".overlay-sub").textContent = "Resumen de tu Bubble Pop aromático 🍷";
+        document.querySelector(".overlay-sub").textContent = "Resumen de tu Bubble Pop aromático argentino 🍷";
         finalStatsEl.innerHTML = `
           Vino jugado: <b>${activeWine.short}</b><br>
-          Uvas: <b>${activeWine.grapes}</b><br><br>
+          Uva: <b>${activeWine.grapes}</b><br><br>
           ✅ Aciertos: <b>${score}</b><br>
           ❌ Burbujas mal reventadas: <span class="bad"><b>${mistakes}</b></span><br>
           💨 Aromas buenos que se escaparon: <b>${missed}</b><br>
@@ -861,7 +863,7 @@
           <small>Recuerda: solo tienes una partida por vino.</small>
         `;
         restartOverlayBtn.style.display = "inline-flex";
-        statusText.textContent = "Partida terminada para " + activeWine.short + ". Pulsa “Jugar con otro vino” o cambia en el menú.";
+        statusText.textContent = "Partida terminada para " + activeWine.short + ". Pulsa “Jugar otro vino” o cambia en el menú.";
       }
 
       endOverlay.classList.add("show");
@@ -889,7 +891,6 @@
         spawnBubble();
       }
 
-      const fieldRect = playfield.getBoundingClientRect();
       const toRemove = [];
       bubbles.forEach(b => {
         b.__y -= b.__speed * dt;
@@ -942,13 +943,12 @@
 
       wineSelect.disabled = true;
 
-      statusText.textContent = "Partida en curso: toca solo los aromas que encajen con el vino.";
+      statusText.textContent = "Partida en curso: toca solo los aromas que encajen con el vino argentino.";
       showToast("Partida iniciada · revienta las burbujas correctas 🫧");
 
       requestAnimationFrame(loop);
     }
 
-    // Eventos
     startBtn.addEventListener("click", startGame);
 
     wineSelect.addEventListener("change", ()=>{
@@ -972,7 +972,6 @@
       startGame();
     });
 
-    // Estado inicial
     timerEl.textContent = formatTime(GAME_DURATION_MS);
     updateWineUI();
   })();
