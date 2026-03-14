@@ -576,7 +576,6 @@
       background:transparent;
       border-radius:0;
     }
-    /* 🔴 Ocultar barra móvil en modo imagen invitado */
     body.guestScene .mobileBar{
       display:none !important;
     }
@@ -608,7 +607,6 @@
   </div>
 </header>
 
-<!-- DASHBOARD (TV) -->
 <section id="dashboard" class="wrap tvDash">
   <div id="dashScale">
     <div id="dashGrid"></div>
@@ -669,7 +667,6 @@
         </div>
         <div class="small" style="margin-top:6px">URL host: añade <b>?host=1</b></div>
 
-        <!-- Controles Pantalla 2 (infoScreen) -->
         <div class="section" style="margin-top:14px; padding-top:12px;">
           <h3>Pantalla 2 (Story / Mapas)</h3>
 
@@ -695,7 +692,6 @@
         </div>
       </div>
 
-      <!-- Mini-juegos -->
       <div class="section" style="margin-top:16px; padding-top:12px; border-top:1px dashed #343a56;">
         <h3 style="margin:0 0 6px; font-size:1rem;">🎮 Mini-juegos</h3>
         <div class="small" style="margin-bottom:6px; opacity:.9;">
@@ -772,7 +768,6 @@
   </div>
 </div>
 
-<!-- Barra móvil premium invitado -->
 <div id="mobileBar" class="mobileBar">
   <div class="mobileBarMain">
     <div id="mobileBarTitle" class="mobileBarTitle">Cata Vinos Argentinos</div>
@@ -1025,7 +1020,6 @@
     if(os) os.style.display = "none";
   }
 
-  // Invitados: escuchar mini-juegos y cambiar de página automáticamente
   if(!isHost && !isDashboard){
     const miniGamesRef = ref(db, "miniGames/currentScreen");
     onValue(miniGamesRef, (snap) => {
@@ -1167,66 +1161,44 @@
     update(jRef, { name: nameToUse, ts: Date.now() });
   }
 
-function clearLocalTastingState(){
-  const prefixes = [
-    "gw_rating_",
-    "gw_quiz_",
-    "gw_notes_",
-    "gw_mouth_"
-  ];
+  function clearLocalTastingState(){
+    const prefixes = [
+      "gw_rating_",
+      "gw_quiz_",
+      "gw_notes_",
+      "gw_mouth_"
+    ];
 
-  const keysToRemove = [];
-  for(let i = 0; i < localStorage.length; i++){
-    const key = localStorage.key(i);
-    if(!key) continue;
+    const keysToRemove = [];
+    for(let i = 0; i < localStorage.length; i++){
+      const key = localStorage.key(i);
+      if(!key) continue;
 
-    if(prefixes.some(prefix => key.startsWith(prefix))){
-      keysToRemove.push(key);
+      if(prefixes.some(prefix => key.startsWith(prefix))){
+        keysToRemove.push(key);
+      }
     }
+
+    keysToRemove.forEach(key => localStorage.removeItem(key));
   }
 
-  keysToRemove.forEach(key => localStorage.removeItem(key));
-}
+  function clearGuestIdentity(){
+    localStorage.removeItem("gw_name");
+    localStorage.removeItem(SESSION_LS_KEY);
 
-function clearLocalTastingState(){
-  const prefixes = [
-    "gw_rating_",
-    "gw_quiz_",
-    "gw_notes_",
-    "gw_mouth_"
-  ];
+    clearLocalTastingState();
 
-  const keysToRemove = [];
-  for(let i = 0; i < localStorage.length; i++){
-    const key = localStorage.key(i);
-    if(!key) continue;
-
-    if(prefixes.some(prefix => key.startsWith(prefix))){
-      keysToRemove.push(key);
-    }
+    guestName = "";
+    guestReady = false;
   }
-
-  keysToRemove.forEach(key => localStorage.removeItem(key));
-}
-
-function clearGuestIdentity(){
-  localStorage.removeItem("gw_name");
-  localStorage.removeItem(SESSION_LS_KEY);
-
-  clearLocalTastingState();
-
-  guestName = "";
-  guestReady = false;
-}
-
-
 
   function enterGuestWithName(name){
-    if(currentSessionVersion === null) return;
-
     guestName = name.toUpperCase().slice(0, 8);
     localStorage.setItem("gw_name", guestName);
-    localStorage.setItem(SESSION_LS_KEY, String(currentSessionVersion));
+
+    const sessionToSave = currentSessionVersion ?? "legacy";
+    localStorage.setItem(SESSION_LS_KEY, String(sessionToSave));
+
     guestReady = true;
 
     const gate = document.getElementById("nameGate");
@@ -2309,7 +2281,7 @@ function clearGuestIdentity(){
         if(document.exitFullscreen) await document.exitFullscreen();
         else if(document.webkitExitFullscreen) await document.webkitExitFullscreen();
         else if(document.mozCancelFullScreen) await document.mozCancelFullScreen();
-        else if(document.msExitFullscreen) await document.msRequestFullscreen();
+        else if(document.msExitFullscreen) await document.msExitFullscreen();
       }catch(e){}
     }
 
@@ -2355,7 +2327,7 @@ function clearGuestIdentity(){
     const activeId      = data.activeWine ?? -1;
     const hostNote      = data.hostNote || "";
     const expectedUsers = data.expectedUsers ?? 12;
-    const sessionVersion = data.sessionVersion ?? null;
+    const sessionVersion = data.sessionVersion ?? "legacy";
     currentSessionVersion = sessionVersion;
 
     if(!isHost && !isDashboard){
@@ -2368,7 +2340,6 @@ function clearGuestIdentity(){
 
       const hasValidIdentity =
         !!savedName &&
-        sessionVersion !== null &&
         String(savedSessionVersion) === String(sessionVersion);
 
       if((savedName || savedSessionVersion) && !hasValidIdentity){
@@ -2446,9 +2417,11 @@ function clearGuestIdentity(){
   });
 
   if(isHost){
-    onValue(rootRef, (snap)=>{
-      if(snap.val() == null){
-        set(rootRef, {
+    onValue(rootRef, async (snap)=>{
+      const val = snap.val();
+
+      if(val == null){
+        await set(rootRef, {
           activeWine: -1,
           miniGames: { currentScreen: "cata" },
           hostNote: "",
@@ -2461,6 +2434,10 @@ function clearGuestIdentity(){
           userActions: {},
           joinedUsers: {},
           infoScreen: "none"
+        });
+      }else if(!val.sessionVersion){
+        await update(rootRef, {
+          sessionVersion: Date.now()
         });
       }
     }, { onlyOnce:true });
