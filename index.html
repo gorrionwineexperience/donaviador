@@ -1053,17 +1053,41 @@
 
     function buildTop3FromBubbles(results){
       const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
+
       arr.sort((a,b)=>{
-        const aScore = a.totalScore || 0;
-        const bScore = b.totalScore || 0;
-        if(bScore !== aScore) return bScore - aScore;
-        const aAcc = a.avgAccuracy || 0;
-        const bAcc = b.avgAccuracy || 0;
+        const aPoints = Number(
+          a?.totalBubblePoints ??
+          (((a?.totalScore || 0) * 2) - ((a?.totalMistakes || 0) * 2) - (a?.totalMissed || 0))
+        );
+
+        const bPoints = Number(
+          b?.totalBubblePoints ??
+          (((b?.totalScore || 0) * 2) - ((b?.totalMistakes || 0) * 2) - (b?.totalMissed || 0))
+        );
+
+        if(bPoints !== aPoints) return bPoints - aPoints;
+
+        const aAcc = a?.avgAccuracy || 0;
+        const bAcc = b?.avgAccuracy || 0;
         if(bAcc !== aAcc) return bAcc - aAcc;
-        const aTs = a.ts || 0;
-        const bTs = b.ts || 0;
+
+        const aScore = a?.totalScore || 0;
+        const bScore = b?.totalScore || 0;
+        if(bScore !== aScore) return bScore - aScore;
+
+        const aMistakes = a?.totalMistakes || 0;
+        const bMistakes = b?.totalMistakes || 0;
+        if(aMistakes !== bMistakes) return aMistakes - bMistakes;
+
+        const aMissed = a?.totalMissed || 0;
+        const bMissed = b?.totalMissed || 0;
+        if(aMissed !== bMissed) return aMissed - bMissed;
+
+        const aTs = a?.ts || 0;
+        const bTs = b?.ts || 0;
         return aTs - bTs;
       });
+
       return arr.slice(0, 3);
     }
 
@@ -1095,16 +1119,29 @@
         return;
       }
 
-      const renderList = (items) => {
+      const renderList = (items, type) => {
         if(!items.length) return '<div class="small">Sin datos aún</div>';
+
         return items.map((p, idx) => {
-          const pos = idx+1;
+          const pos = idx + 1;
           const medal = pos === 1 ? "🥇" : (pos === 2 ? "🥈" : "🥉");
           const name = (p.name || p.sessionId || "Invitado").toString().toUpperCase();
+
+          let extra = "";
+          if(type === "bubbles"){
+            const bubblePoints = Number(
+              p?.totalBubblePoints ??
+              (((p?.totalScore || 0) * 2) - ((p?.totalMistakes || 0) * 2) - (p?.totalMissed || 0))
+            );
+            extra = ` · ${bubblePoints} pts`;
+          }else if(type === "linea"){
+            extra = ` · ${p?.avgPercent || 0}%`;
+          }
+
           return `
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
               <span style="font-size:1.1rem; font-weight:800;">${medal}</span>
-              <span style="font-size:1.05rem; font-weight:700;">${pos}º · ${name}</span>
+              <span style="font-size:1.05rem; font-weight:700;">${pos}º · ${name}${extra}</span>
             </div>
           `;
         }).join("");
@@ -1114,11 +1151,11 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:flex-start;">
           <div>
             <div class="small" style="color:var(--muted); margin-bottom:4px;">Bubble Pop de Aromas</div>
-            ${renderList(topB)}
+            ${renderList(topB, "bubbles")}
           </div>
           <div>
             <div class="small" style="color:var(--muted); margin-bottom:4px;">Test alcoholemia</div>
-            ${renderList(topL)}
+            ${renderList(topL, "linea")}
           </div>
         </div>
       `;
