@@ -451,8 +451,9 @@
         <button id="restartOverlayBtn" class="primary">Jugar otro vino</button>
       </div>
       <div class="small">
-        <div class="chip good">✅ Aciertos = burbujas de aroma correcto</div>
-        <div class="chip bad">❌ Fallos = burbujas que no encajaban con el vino</div>
+        <div class="chip good">✅ Aciertos = burbujas correctas</div>
+        <div class="chip bad">❌ Fallos = burbujas incorrectas</div>
+        <div class="chip">🏅 Fórmula = (✅×2) - (❌×2) - 💨</div>
       </div>
     </div>
   </div>
@@ -644,6 +645,18 @@
       return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
     }
 
+    function calcBubblePoints(score, mistakes, missed){
+      return (score * 2) - (mistakes * 2) - missed;
+    }
+
+    function getBubbleLevel(points){
+      if(points >= 20) return "Sniper aromático argentino 🫧🇦🇷";
+      if(points >= 12) return "Nariz muy fina 😏";
+      if(points >= 6) return "Buen olfato 👀";
+      if(points >= 1) return "Vas afinando 🍷";
+      return "Todavía calentando dedo 😄";
+    }
+
     function getActiveWine(){ return wines[currentWineId]; }
 
     function updateWineUI(){
@@ -654,7 +667,9 @@
     }
 
     function resetCounters(){
-      score = 0; mistakes = 0; missed = 0;
+      score = 0;
+      mistakes = 0;
+      missed = 0;
       scoreEl.textContent = "0";
       mistakesEl.textContent = "0";
       missedEl.textContent = "0";
@@ -738,14 +753,17 @@
     function buildFinalSummaryHTML(){
       let html = "Resumen de tus 5 vinos argentinos jugados:<br><br>";
       const ids = WINE_ORDER;
+
       ids.forEach(id => {
         const w = wines[id];
         const r = wineResults[id];
         if(!r) return;
+
         html += `
           <div style="margin-bottom:10px;">
             <b>${w.short}</b><br>
-            ✅ Aciertos: <b>${r.score}</b> · ❌ Malas: <b>${r.mistakes}</b> · 💨 Escapan: <b>${r.missed}</b><br>
+            🏅 Puntos Bubble: <b>${r.bubblePoints}</b><br>
+            ✅ Aciertos: <b>${r.score}</b> · ❌ Fallos: <b>${r.mistakes}</b> · 💨 Escapan: <b>${r.missed}</b><br>
             🎯 Precisión: <b>${r.accuracy}%</b>
           </div>
         `;
@@ -753,23 +771,33 @@
 
       const all = Object.values(wineResults || {});
       if(all.length){
-        let totalScore = 0, totalMistakes = 0, totalMissed = 0, sumAcc = 0;
+        let totalScore = 0;
+        let totalMistakes = 0;
+        let totalMissed = 0;
+        let sumAcc = 0;
+        let totalBubblePoints = 0;
+
         all.forEach(r => {
-          totalScore    += r.score    || 0;
+          totalScore += r.score || 0;
           totalMistakes += r.mistakes || 0;
-          totalMissed   += r.missed   || 0;
-          sumAcc        += r.accuracy || 0;
+          totalMissed += r.missed || 0;
+          sumAcc += r.accuracy || 0;
+          totalBubblePoints += r.bubblePoints || 0;
         });
+
         const avgAcc = Math.round(sumAcc / all.length);
+
         html += `
           <br>
           <b>Resumen global:</b><br>
+          🏅 Puntos Bubble totales: <b>${totalBubblePoints}</b><br>
           ✅ Aciertos totales: <b>${totalScore}</b><br>
           ❌ Fallos totales: <b>${totalMistakes}</b><br>
           💨 Burbujas buenas que se escaparon: <b>${totalMissed}</b><br>
           🎯 Precisión media: <b>${avgAcc}%</b>
         `;
       }
+
       return html;
     }
 
@@ -792,26 +820,35 @@
 
       const totalTouches = score + mistakes;
       const accuracy = totalTouches ? Math.round((score / totalTouches) * 100) : 0;
+      const bubblePoints = calcBubblePoints(score, mistakes, missed);
       const activeWine = getActiveWine();
 
       wineResults[currentWineId] = {
         score,
         mistakes,
         missed,
-        accuracy
+        accuracy,
+        bubblePoints
       };
 
       try{
         const all = Object.values(wineResults || {});
         const winesPlayed = all.length;
-        let totalScore = 0, totalMistakes = 0, totalMissed = 0, sumAccuracy = 0;
+        let totalScore = 0;
+        let totalMistakes = 0;
+        let totalMissed = 0;
+        let sumAccuracy = 0;
+        let totalBubblePoints = 0;
+
         all.forEach(r => {
           if(!r) return;
-          totalScore    += r.score    || 0;
+          totalScore += r.score || 0;
           totalMistakes += r.mistakes || 0;
-          totalMissed   += r.missed   || 0;
-          sumAccuracy   += r.accuracy || 0;
+          totalMissed += r.missed || 0;
+          sumAccuracy += r.accuracy || 0;
+          totalBubblePoints += r.bubblePoints || 0;
         });
+
         const avgAccuracy = winesPlayed ? Math.round(sumAccuracy / winesPlayed) : 0;
 
         const safeId = sessionId || "INVITADO";
@@ -824,6 +861,7 @@
           totalScore,
           totalMistakes,
           totalMissed,
+          totalBubblePoints,
           avgAccuracy,
           perWine: wineResults
         };
@@ -835,12 +873,7 @@
       winePlayed[currentWineId] = true;
       updateWineAvailabilityUI();
 
-      let nivel;
-      if(score >= 12) nivel = "Sniper aromático argentino 🫧🇦🇷";
-      else if(score >= 7) nivel = "Muy buena puntería 😏";
-      else if(score >= 3) nivel = "Puntería curiosa 👀";
-      else nivel = "Todavía calentando dedo 😄";
-
+      const nivel = getBubbleLevel(bubblePoints);
       const remaining = Object.keys(wines).filter(id => !winePlayed[id]);
 
       if(remaining.length === 0){
@@ -855,11 +888,13 @@
         finalStatsEl.innerHTML = `
           Vino jugado: <b>${activeWine.short}</b><br>
           Uva: <b>${activeWine.grapes}</b><br><br>
+          🏅 Puntos Bubble: <b>${bubblePoints}</b><br>
           ✅ Aciertos: <b>${score}</b><br>
-          ❌ Burbujas mal reventadas: <span class="bad"><b>${mistakes}</b></span><br>
+          ❌ Burbujas mal reventadas: <b>${mistakes}</b><br>
           💨 Aromas buenos que se escaparon: <b>${missed}</b><br>
           🎯 Precisión al tocar: <b>${accuracy}%</b><br><br>
           Nivel de puntería aromática:<br><b>${nivel}</b><br><br>
+          <small>Fórmula: (aciertos × 2) - (fallos × 2) - escapadas</small><br>
           <small>Recuerda: solo tienes una partida por vino.</small>
         `;
         restartOverlayBtn.style.display = "inline-flex";
@@ -903,6 +938,7 @@
           }
         }
       });
+
       toRemove.forEach(b => {
         if(playfield.contains(b)) playfield.removeChild(b);
         bubbles = bubbles.filter(x => x !== b);
