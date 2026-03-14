@@ -695,21 +695,22 @@
         </div>
       </div>
 
-        <!-- Mini-juegos -->
-        <div class="section" style="margin-top:16px; padding-top:12px; border-top:1px dashed #343a56;">
-          <h3 style="margin:0 0 6px; font-size:1rem;">🎮 Mini-juegos</h3>
-<div class="small" style="margin-bottom:6px; opacity:.9;">
-  Lanza mini-juegos a los invitados. Tú sigues viendo la cata normal.
-</div>
-<div class="row">
-  <button id="miniCataBtn">🍷 Volver a la cata</button>
-  <button id="miniBubblesBtn" class="primary">🫧 Bubble Pop de Aromas</button>
-  <button id="miniLineaBtn">📈 Test alcoholemia</button>
-  <button id="miniSummaryBtn">🏁 Podio final</button>
-</div>
-<div class="small" style="margin-top:6px; opacity:.9;">
-  Solo los invitados (sin <code>?host=1</code> ni <code>?dashboard=1</code>) cambiarán de página automáticamente.
-</div>
+      <!-- Mini-juegos -->
+      <div class="section" style="margin-top:16px; padding-top:12px; border-top:1px dashed #343a56;">
+        <h3 style="margin:0 0 6px; font-size:1rem;">🎮 Mini-juegos</h3>
+        <div class="small" style="margin-bottom:6px; opacity:.9;">
+          Lanza mini-juegos a los invitados. Tú sigues viendo la cata normal.
+        </div>
+        <div class="row">
+          <button id="miniCataBtn">🍷 Volver a la cata</button>
+          <button id="miniBubblesBtn" class="primary">🫧 Bubble Pop de Aromas</button>
+          <button id="miniLineaBtn">📈 Test alcoholemia</button>
+          <button id="miniSummaryBtn">🏁 Podio final</button>
+        </div>
+        <div class="small" style="margin-top:6px; opacity:.9;">
+          Solo los invitados (sin <code>?host=1</code> ni <code>?dashboard=1</code>) cambiarán de página automáticamente.
+        </div>
+      </div>
 
       <div id="orderSection" class="section">
         <h3>Orden de servicio</h3>
@@ -741,7 +742,6 @@
   </div>
 </div>
 
-  
 <div id="nameGate" class="overlay">
   <div class="ovCard" style="text-align:left">
     <div class="welcomeLogoWrap" style="margin-top:0; margin-bottom:10px;">
@@ -1025,129 +1025,128 @@
     if(os) os.style.display = "none";
   }
 
-// Invitados: escuchar mini-juegos y cambiar de página automáticamente
-if(!isHost && !isDashboard){
-  const miniGamesRef = ref(db, "miniGames/currentScreen");
-  onValue(miniGamesRef, (snap) => {
-    const screen = snap.val() || "cata";
-    const current = (location.pathname.split("/").pop() || "").toLowerCase();
-    const miniOv = document.getElementById("miniSummaryOverlay");
+  // Invitados: escuchar mini-juegos y cambiar de página automáticamente
+  if(!isHost && !isDashboard){
+    const miniGamesRef = ref(db, "miniGames/currentScreen");
+    onValue(miniGamesRef, (snap) => {
+      const screen = snap.val() || "cata";
+      const current = (location.pathname.split("/").pop() || "").toLowerCase();
+      const miniOv = document.getElementById("miniSummaryOverlay");
 
-    // Por defecto, ocultamos el podio
-    if(miniOv){
-      miniOv.classList.remove("show");
-    }
-
-    if(screen === "cata"){
-      // La cata vive en index.html (esta página).
-      return;
-    }else if(screen === "bubbles"){
-      if(!current.includes("burbujas")){
-        window.location.href = "burbujas.html";
-      }
-    }else if(screen === "linea"){
-      if(!current.includes("linea")){
-        window.location.href = "linea.html";
-      }
-    }else if(screen === "summary"){
-      // Pantalla de podio final: nos quedamos en index.html y mostramos el resumen
+      // Por defecto, ocultamos el podio
       if(miniOv){
-        miniOv.classList.add("show");
+        miniOv.classList.remove("show");
       }
-    }
-  });
 
-  // Escuchar resultados de los mini-juegos para construir el podio en el móvil
-  let bubblesResultsCache = {};
-  let lineaResultsCache = {};
-
-  function buildTop3FromBubbles(results){
-    const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
-    arr.sort((a,b)=>{
-      const aScore = a.totalScore || 0;
-      const bScore = b.totalScore || 0;
-      if(bScore !== aScore) return bScore - aScore;
-      const aAcc = a.avgAccuracy || 0;
-      const bAcc = b.avgAccuracy || 0;
-      if(bAcc !== aAcc) return bAcc - aAcc;
-      const aTs = a.ts || 0;
-      const bTs = b.ts || 0;
-      return aTs - bTs;
+      if(screen === "cata"){
+        // La cata vive en index.html (esta página).
+        return;
+      }else if(screen === "bubbles"){
+        if(!current.includes("burbujas")){
+          window.location.href = "burbujas.html";
+        }
+      }else if(screen === "linea"){
+        if(!current.includes("linea")){
+          window.location.href = "linea.html";
+        }
+      }else if(screen === "summary"){
+        // Pantalla de podio final: nos quedamos en index.html y mostramos el resumen
+        if(miniOv){
+          miniOv.classList.add("show");
+        }
+      }
     });
-    return arr.slice(0, 3);
-  }
 
-  function buildTop3FromLinea(results){
-    const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
-    arr.sort((a,b)=>{
-      const aPct = a.avgPercent || 0;
-      const bPct = b.avgPercent || 0;
-      if(bPct !== aPct) return bPct - aPct;
-      const aSec = a.avgInsideSec || 0;
-      const bSec = b.avgInsideSec || 0;
-      if(bSec !== aSec) return bSec - aSec;
-      const aTs = a.ts || 0;
-      const bTs = b.ts || 0;
-      return aTs - bTs;
-    });
-    return arr.slice(0, 3);
-  }
+    // Escuchar resultados de los mini-juegos para construir el podio en el móvil
+    let bubblesResultsCache = {};
+    let lineaResultsCache = {};
 
-  function updateMiniSummary(){
-    const box = document.getElementById("miniSummaryContent");
-    if(!box) return;
-
-    const topB = buildTop3FromBubbles(bubblesResultsCache);
-    const topL = buildTop3FromLinea(lineaResultsCache);
-
-    if(!topB.length && !topL.length){
-      box.innerHTML = '<div class="small">Todavía no hay resultados suficientes en los mini-juegos.</div>';
-      return;
+    function buildTop3FromBubbles(results){
+      const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
+      arr.sort((a,b)=>{
+        const aScore = a.totalScore || 0;
+        const bScore = b.totalScore || 0;
+        if(bScore !== aScore) return bScore - aScore;
+        const aAcc = a.avgAccuracy || 0;
+        const bAcc = b.avgAccuracy || 0;
+        if(bAcc !== aAcc) return bAcc - aAcc;
+        const aTs = a.ts || 0;
+        const bTs = b.ts || 0;
+        return aTs - bTs;
+      });
+      return arr.slice(0, 3);
     }
 
-    const renderList = (items) => {
-      if(!items.length) return '<div class="small">Sin datos aún</div>';
-      return items.map((p, idx) => {
-        const pos = idx+1;
-        const medal = pos === 1 ? "🥇" : (pos === 2 ? "🥈" : "🥉");
-        const name = (p.name || p.sessionId || "Invitado").toString().toUpperCase();
-        return `
-          <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
-            <span style="font-size:1.1rem; font-weight:800;">${medal}</span>
-            <span style="font-size:1.05rem; font-weight:700;">${pos}º · ${name}</span>
+    function buildTop3FromLinea(results){
+      const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
+      arr.sort((a,b)=>{
+        const aPct = a.avgPercent || 0;
+        const bPct = b.avgPercent || 0;
+        if(bPct !== aPct) return bPct - aPct;
+        const aSec = a.avgInsideSec || 0;
+        const bSec = b.avgInsideSec || 0;
+        if(bSec !== aSec) return bSec - aSec;
+        const aTs = a.ts || 0;
+        const bTs = b.ts || 0;
+        return aTs - bTs;
+      });
+      return arr.slice(0, 3);
+    }
+
+    function updateMiniSummary(){
+      const box = document.getElementById("miniSummaryContent");
+      if(!box) return;
+
+      const topB = buildTop3FromBubbles(bubblesResultsCache);
+      const topL = buildTop3FromLinea(lineaResultsCache);
+
+      if(!topB.length && !topL.length){
+        box.innerHTML = '<div class="small">Todavía no hay resultados suficientes en los mini-juegos.</div>';
+        return;
+      }
+
+      const renderList = (items) => {
+        if(!items.length) return '<div class="small">Sin datos aún</div>';
+        return items.map((p, idx) => {
+          const pos = idx+1;
+          const medal = pos === 1 ? "🥇" : (pos === 2 ? "🥈" : "🥉");
+          const name = (p.name || p.sessionId || "Invitado").toString().toUpperCase();
+          return `
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+              <span style="font-size:1.1rem; font-weight:800;">${medal}</span>
+              <span style="font-size:1.05rem; font-weight:700;">${pos}º · ${name}</span>
+            </div>
+          `;
+        }).join("");
+      };
+
+      box.innerHTML = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:flex-start;">
+          <div>
+            <div class="small" style="color:var(--muted); margin-bottom:4px;">Bubble Pop de Aromas</div>
+            ${renderList(topB)}
           </div>
-        `;
-      }).join("");
-    };
+          <div>
+            <div class="small" style="color:var(--muted); margin-bottom:4px;">Test alcoholemia</div>
+            ${renderList(topL)}
+          </div>
+        </div>
+      `;
+    }
 
-    box.innerHTML = `
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:flex-start;">
-        <div>
-          <div class="small" style="color:var(--muted); margin-bottom:4px;">Bubble Pop de Aromas</div>
-          ${renderList(topB)}
-        </div>
-        <div>
-          <div class="small" style="color:var(--muted); margin-bottom:4px;">Test alcoholemia</div>
-          ${renderList(topL)}
-        </div>
-      </div>
-    `;
+    const bubblesResultsRef = ref(db, "miniGames/bubbles/results");
+    const lineaResultsRef   = ref(db, "miniGames/linea/results");
+
+    onValue(bubblesResultsRef, (snap)=>{
+      bubblesResultsCache = snap.val() || {};
+      updateMiniSummary();
+    });
+
+    onValue(lineaResultsRef, (snap)=>{
+      lineaResultsCache = snap.val() || {};
+      updateMiniSummary();
+    });
   }
-
-  const bubblesResultsRef = ref(db, "miniGames/bubbles/results");
-  const lineaResultsRef   = ref(db, "miniGames/linea/results");
-
-  onValue(bubblesResultsRef, (snap)=>{
-    bubblesResultsCache = snap.val() || {};
-    updateMiniSummary();
-  });
-
-  onValue(lineaResultsRef, (snap)=>{
-    lineaResultsCache = snap.val() || {};
-    updateMiniSummary();
-  });
-}
-
 
   function getDeviceId(){
     let id = localStorage.getItem("gw_device");
@@ -1159,6 +1158,9 @@ if(!isHost && !isDashboard){
     return id;
   }
   const deviceId = getDeviceId();
+
+  const SESSION_LS_KEY = "gw_session_version";
+  let guestReady = false;
 
   let guestName = (localStorage.getItem("gw_name") || "").trim();
   if(guestName){
@@ -1173,36 +1175,54 @@ if(!isHost && !isDashboard){
     update(jRef, { name: nameToUse, ts: Date.now() });
   }
 
+  function enterGuestWithName(name){
+    guestName = name.toUpperCase().slice(0, 8);
+    localStorage.setItem("gw_name", guestName);
+    guestReady = true;
+
+    const gate = document.getElementById("nameGate");
+    if(gate) gate.classList.remove("show");
+    document.body.style.overflow = "";
+
+    markJoined();
+  }
+
   function showNameGate(){
     const gate = document.getElementById("nameGate");
     const input = document.getElementById("nameInput");
     const btn = document.getElementById("enterBtn");
 
+    if(!gate || !input || !btn) return;
+    if(gate.classList.contains("show")) return;
+
     gate.classList.add("show");
     document.body.style.overflow = "hidden";
+    input.value = "";
 
-    const syncBtn = () => { btn.disabled = input.value.trim().length === 0; };
-    input.addEventListener("input", syncBtn);
-    syncBtn();
-    input.focus();
+    const syncBtn = () => {
+      btn.disabled = input.value.trim().length === 0;
+    };
+
+    input.oninput = syncBtn;
+    input.onkeydown = (e) => {
+      if(e.key === "Enter" && !btn.disabled){
+        btn.click();
+      }
+    };
 
     btn.onclick = () => {
       const n = input.value.trim();
       if(!n) return;
-      const upper = n.toUpperCase();
-      guestName = upper.slice(0, 8);
-      localStorage.setItem("gw_name", guestName);
-      gate.classList.remove("show");
-      document.body.style.overflow = "";
-      markJoined();
+      enterGuestWithName(n);
     };
+
+    syncBtn();
+    input.focus();
   }
 
-  if(!isHost && !isDashboard){
-    if(!guestName) showNameGate();
-    else markJoined();
-  }else{
+  if(isHost || isDashboard){
     guestName = isHost ? "HOST" : "DASHBOARD";
+    guestReady = true;
   }
 
   function setTheme(id){
@@ -1810,7 +1830,7 @@ if(!isHost && !isDashboard){
       };
     }
 
-    const infoNoneBtn  = document.getElementById("infoNoneBtn");
+    const infoNoneBtn   = document.getElementById("infoNoneBtn");
     const infoScene1Btn = document.getElementById("infoScene1Btn");
     const infoScene2Btn = document.getElementById("infoScene2Btn");
     const infoScene3Btn = document.getElementById("infoScene3Btn");
@@ -1842,27 +1862,27 @@ if(!isHost && !isDashboard){
         update(ref(db, "/"), { infoScreen: "scene5" });
     }
 
-const miniCataBtn    = document.getElementById("miniCataBtn");
-const miniBubblesBtn = document.getElementById("miniBubblesBtn");
-const miniLineaBtn   = document.getElementById("miniLineaBtn");
-const miniSummaryBtn = document.getElementById("miniSummaryBtn");
+    const miniCataBtn    = document.getElementById("miniCataBtn");
+    const miniBubblesBtn = document.getElementById("miniBubblesBtn");
+    const miniLineaBtn   = document.getElementById("miniLineaBtn");
+    const miniSummaryBtn = document.getElementById("miniSummaryBtn");
 
-const setMiniScreen = (screen) => {
-  update(ref(db, "/miniGames"), { currentScreen: screen });
-};
+    const setMiniScreen = (screen) => {
+      update(ref(db, "/miniGames"), { currentScreen: screen });
+    };
 
-if(miniCataBtn){
-  miniCataBtn.onclick = () => setMiniScreen("cata");
-}
-if(miniBubblesBtn){
-  miniBubblesBtn.onclick = () => setMiniScreen("bubbles");
-}
-if(miniLineaBtn){
-  miniLineaBtn.onclick = () => setMiniScreen("linea");
-}
-if(miniSummaryBtn){
-  miniSummaryBtn.onclick = () => setMiniScreen("summary");
-}
+    if(miniCataBtn){
+      miniCataBtn.onclick = () => setMiniScreen("cata");
+    }
+    if(miniBubblesBtn){
+      miniBubblesBtn.onclick = () => setMiniScreen("bubbles");
+    }
+    if(miniLineaBtn){
+      miniLineaBtn.onclick = () => setMiniScreen("linea");
+    }
+    if(miniSummaryBtn){
+      miniSummaryBtn.onclick = () => setMiniScreen("summary");
+    }
 
     const expectedInput = document.getElementById("expectedInput");
     const setExpectedBtn = document.getElementById("setExpectedBtn");
@@ -1902,6 +1922,7 @@ if(miniSummaryBtn){
           miniGames: { currentScreen: "cata" },
           hostNote: "",
           expectedUsers,
+          sessionVersion: Date.now(),
           ratings: {},
           quiz: {},
           notes: {},
@@ -2293,15 +2314,50 @@ if(miniSummaryBtn){
     const activeId      = data.activeWine ?? -1;
     const hostNote      = data.hostNote || "";
     const expectedUsers = data.expectedUsers ?? 12;
+    const sessionVersion = data.sessionVersion || 0;
 
-    const ratingsMap    = data.ratings || {};
-    const quizMap       = data.quiz  || {};
-    const notesMap      = data.notes || {};
-    const mouthMap      = data.mouth || {};
-    const userActionsMap= data.userActions || {};
-    const joinedUsers   = data.joinedUsers || {};
-    const joinedCount   = Object.keys(joinedUsers).length;
-    const infoScreen    = data.infoScreen || "none";
+    if(!isHost && !isDashboard){
+      const savedSessionVersion = localStorage.getItem(SESSION_LS_KEY);
+      let savedName = (localStorage.getItem("gw_name") || "")
+        .trim()
+        .toUpperCase()
+        .slice(0, 8);
+
+      // Si la sesión ha cambiado, invalidamos el nombre guardado
+      if(String(savedSessionVersion) !== String(sessionVersion)){
+        localStorage.removeItem("gw_name");
+        localStorage.setItem(SESSION_LS_KEY, String(sessionVersion));
+        guestName = "";
+        guestReady = false;
+        savedName = "";
+      }
+
+      // Si la sesión es válida y había nombre guardado, entra sin pedirlo
+      if(!guestReady && savedName){
+        guestName = savedName;
+        localStorage.setItem("gw_name", savedName);
+        guestReady = true;
+        markJoined();
+      }
+
+      // Si aún no está validado, pedimos nombre
+      if(!guestReady){
+        showNameGate();
+      }else{
+        const gate = document.getElementById("nameGate");
+        if(gate) gate.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+    }
+
+    const ratingsMap     = data.ratings || {};
+    const quizMap        = data.quiz  || {};
+    const notesMap       = data.notes || {};
+    const mouthMap       = data.mouth || {};
+    const userActionsMap = data.userActions || {};
+    const joinedUsers    = data.joinedUsers || {};
+    const joinedCount    = Object.keys(joinedUsers).length;
+    const infoScreen     = data.infoScreen || "none";
 
     updateHeaderWine(activeId, joinedCount, expectedUsers);
 
@@ -2355,8 +2411,10 @@ if(miniSummaryBtn){
       if(snap.val() == null){
         set(rootRef, {
           activeWine: -1,
+          miniGames: { currentScreen: "cata" },
           hostNote: "",
           expectedUsers: 12,
+          sessionVersion: Date.now(),
           ratings: {},
           quiz: {},
           notes: {},
@@ -2375,35 +2433,3 @@ if(miniSummaryBtn){
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
