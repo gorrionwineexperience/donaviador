@@ -1167,12 +1167,59 @@
     update(jRef, { name: nameToUse, ts: Date.now() });
   }
 
-  function clearGuestIdentity(){
-    localStorage.removeItem("gw_name");
-    localStorage.removeItem(SESSION_LS_KEY);
-    guestName = "";
-    guestReady = false;
+function clearLocalTastingState(){
+  const prefixes = [
+    "gw_rating_",
+    "gw_quiz_",
+    "gw_notes_",
+    "gw_mouth_"
+  ];
+
+  const keysToRemove = [];
+  for(let i = 0; i < localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(!key) continue;
+
+    if(prefixes.some(prefix => key.startsWith(prefix))){
+      keysToRemove.push(key);
+    }
   }
+
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+}
+
+function clearLocalTastingState(){
+  const prefixes = [
+    "gw_rating_",
+    "gw_quiz_",
+    "gw_notes_",
+    "gw_mouth_"
+  ];
+
+  const keysToRemove = [];
+  for(let i = 0; i < localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(!key) continue;
+
+    if(prefixes.some(prefix => key.startsWith(prefix))){
+      keysToRemove.push(key);
+    }
+  }
+
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+}
+
+function clearGuestIdentity(){
+  localStorage.removeItem("gw_name");
+  localStorage.removeItem(SESSION_LS_KEY);
+
+  clearLocalTastingState();
+
+  guestName = "";
+  guestReady = false;
+}
+
+
 
   function enterGuestWithName(name){
     if(currentSessionVersion === null) return;
