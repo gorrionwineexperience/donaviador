@@ -1033,13 +1033,11 @@
       const current = (location.pathname.split("/").pop() || "").toLowerCase();
       const miniOv = document.getElementById("miniSummaryOverlay");
 
-      // Por defecto, ocultamos el podio
       if(miniOv){
         miniOv.classList.remove("show");
       }
 
       if(screen === "cata"){
-        // La cata vive en index.html (esta página).
         return;
       }else if(screen === "bubbles"){
         if(!current.includes("burbujas")){
@@ -1050,14 +1048,12 @@
           window.location.href = "linea.html";
         }
       }else if(screen === "summary"){
-        // Pantalla de podio final: nos quedamos en index.html y mostramos el resumen
         if(miniOv){
           miniOv.classList.add("show");
         }
       }
     });
 
-    // Escuchar resultados de los mini-juegos para construir el podio en el móvil
     let bubblesResultsCache = {};
     let lineaResultsCache = {};
 
@@ -1160,13 +1156,9 @@
   const deviceId = getDeviceId();
 
   const SESSION_LS_KEY = "gw_session_version";
+  let currentSessionVersion = null;
   let guestReady = false;
-
-  let guestName = (localStorage.getItem("gw_name") || "").trim();
-  if(guestName){
-    guestName = guestName.toUpperCase().slice(0,8);
-    localStorage.setItem("gw_name", guestName);
-  }
+  let guestName = "";
 
   function markJoined(){
     if(isHost || isDashboard) return;
@@ -1175,9 +1167,19 @@
     update(jRef, { name: nameToUse, ts: Date.now() });
   }
 
+  function clearGuestIdentity(){
+    localStorage.removeItem("gw_name");
+    localStorage.removeItem(SESSION_LS_KEY);
+    guestName = "";
+    guestReady = false;
+  }
+
   function enterGuestWithName(name){
+    if(currentSessionVersion === null) return;
+
     guestName = name.toUpperCase().slice(0, 8);
     localStorage.setItem("gw_name", guestName);
+    localStorage.setItem(SESSION_LS_KEY, String(currentSessionVersion));
     guestReady = true;
 
     const gate = document.getElementById("nameGate");
@@ -1193,23 +1195,17 @@
     const btn = document.getElementById("enterBtn");
 
     if(!gate || !input || !btn) return;
-    if(gate.classList.contains("show")) return;
 
     gate.classList.add("show");
     document.body.style.overflow = "hidden";
-    input.value = "";
 
-    const syncBtn = () => {
-      btn.disabled = input.value.trim().length === 0;
-    };
-
+    const syncBtn = () => { btn.disabled = input.value.trim().length === 0; };
     input.oninput = syncBtn;
     input.onkeydown = (e) => {
       if(e.key === "Enter" && !btn.disabled){
         btn.click();
       }
     };
-
     btn.onclick = () => {
       const n = input.value.trim();
       if(!n) return;
@@ -1615,7 +1611,6 @@
     `;
   }
 
-  // 🔴 Ajuste dinámico de la escena invitado (imagen fullscreen)
   function resizeGuestScene(){
     if(!document.body.classList.contains("guestScene")) return;
     const cont = document.getElementById("guestSceneContainer");
@@ -1636,7 +1631,6 @@
   window.addEventListener("resize", resizeGuestScene);
   window.addEventListener("orientationchange", resizeGuestScene);
 
-  // 🔴 MODO IMAGEN INVITADO: solo header + imagen
   function renderGuestScene(screenId, hostNote=""){
     const scene = sceneMap[screenId];
     if(!scene){
@@ -2314,33 +2308,32 @@
     const activeId      = data.activeWine ?? -1;
     const hostNote      = data.hostNote || "";
     const expectedUsers = data.expectedUsers ?? 12;
-    const sessionVersion = data.sessionVersion || 0;
+    const sessionVersion = data.sessionVersion ?? null;
+    currentSessionVersion = sessionVersion;
 
     if(!isHost && !isDashboard){
-      const savedSessionVersion = localStorage.getItem(SESSION_LS_KEY);
-      let savedName = (localStorage.getItem("gw_name") || "")
+      const savedName = (localStorage.getItem("gw_name") || "")
         .trim()
         .toUpperCase()
         .slice(0, 8);
 
-      // Si la sesión ha cambiado, invalidamos el nombre guardado
-      if(String(savedSessionVersion) !== String(sessionVersion)){
-        localStorage.removeItem("gw_name");
-        localStorage.setItem(SESSION_LS_KEY, String(sessionVersion));
-        guestName = "";
-        guestReady = false;
-        savedName = "";
+      const savedSessionVersion = localStorage.getItem(SESSION_LS_KEY);
+
+      const hasValidIdentity =
+        !!savedName &&
+        sessionVersion !== null &&
+        String(savedSessionVersion) === String(sessionVersion);
+
+      if((savedName || savedSessionVersion) && !hasValidIdentity){
+        clearGuestIdentity();
       }
 
-      // Si la sesión es válida y había nombre guardado, entra sin pedirlo
-      if(!guestReady && savedName){
+      if(!guestReady && hasValidIdentity){
         guestName = savedName;
-        localStorage.setItem("gw_name", savedName);
         guestReady = true;
         markJoined();
       }
 
-      // Si aún no está validado, pedimos nombre
       if(!guestReady){
         showNameGate();
       }else{
@@ -2373,7 +2366,6 @@
     const themeId = activeId <= 0 ? 0 : activeId;
     setTheme(themeId);
 
-    // Modo invitado imagen fullscreen
     if(!isHost && !isDashboard && infoScreen !== "none"){
       if(statusEl) statusEl.textContent = `Mostrando imagen de apoyo.`;
       renderGuestScene(infoScreen, hostNote);
