@@ -687,7 +687,9 @@
       const winesPlayed = Number(r?.winesPlayed ?? 0);
       const ts = Number(r?.ts ?? 0);
 
-      const bubblePoints = (totalScore * 2) - (totalMistakes * 2) - totalMissed;
+      const bubblePoints = Number(
+        r?.totalBubblePoints ?? ((totalScore * 2) - (totalMistakes * 2) - totalMissed)
+      );
 
       return {
         id,
@@ -756,16 +758,19 @@
         return;
       }
 
-      const renderList = (items) => {
+      const renderList = (items, type) => {
         if(!items.length) return '<div class="empty">Sin datos aún</div>';
         return items.map((p, idx) => {
-          const pos = idx+1;
+          const pos = idx + 1;
           const medal = pos === 1 ? "🥇" : (pos === 2 ? "🥈" : "🥉");
           const name = (p.name || p.sessionId || "Invitado").toString().toUpperCase();
+          const extra = type === "bubbles"
+            ? ` · ${p.bubblePoints} pts`
+            : ` · ${p.avgPercent || 0}%`;
           return `
             <div class="podio-line">
               <div class="podio-rank">${medal} ${pos}º</div>
-              <div class="podio-name">${name}</div>
+              <div class="podio-name">${name}${extra}</div>
             </div>
           `;
         }).join("");
@@ -775,11 +780,11 @@
         <div class="podio-grid">
           <div>
             <div class="podio-block-title">🫧 Bubble Pop de Aromas</div>
-            ${renderList(topB)}
+            ${renderList(topB, "bubbles")}
           </div>
           <div>
             <div class="podio-block-title">📈 Test alcoholemia</div>
-            ${renderList(topL)}
+            ${renderList(topL, "linea")}
           </div>
         </div>
       `;
@@ -798,7 +803,7 @@
 
       statMetricLabel.textContent = "Ganadores";
       statMetricValue.textContent = "Top 3 de cada juego";
-      statMetricHelp.textContent = "Se calcula con los rankings de Bubble Pop y Test alcoholemia.";
+      statMetricHelp.textContent = "Bubble Pop usa Puntos Bubble; alcoholemia usa % medio en tramo.";
 
       let lastTs = 0;
       Object.values(bubblesResultsCache || {}).forEach(r => { lastTs = Math.max(lastTs, r?.ts || 0); });
@@ -829,7 +834,7 @@
       setGamePill("bubbles");
       rankingIcon.textContent = "🫧";
       rankingTitle.textContent = "Ranking · Bubble Pop de Aromas";
-      rankingSub.textContent = "Ordenado por puntos Bubble: (aciertos × 2) - (fallos × 2) - escapadas.";
+      rankingSub.textContent = "Ordenado por Puntos Bubble: (aciertos × 2) - (fallos × 2) - escapadas.";
 
       tableWrap.style.display = "";
       summaryPodium.style.display = "none";
@@ -887,9 +892,9 @@
       statWinner.textContent = entries[0].name;
       statMetricLabel.textContent = "Media Bubble";
       statMetricValue.textContent = `${avgBubblePoints} pts · ${avgAcc}%`;
-      statMetricHelp.textContent = "Promedio global de puntos Bubble y precisión.";
+      statMetricHelp.textContent = "Promedio global de Puntos Bubble y precisión.";
       statUpdated.textContent = localTimeString(lastTs);
-      gameHint.textContent = "Mini-juego activo: Bubble Pop de Aromas. Gana quien logra más puntos Bubble.";
+      gameHint.textContent = "Mini-juego activo: Bubble Pop de Aromas. Gana quien logra más Puntos Bubble.";
     }
 
     function renderLineaRanking(results){
@@ -952,7 +957,7 @@
         `;
         rankingBody.appendChild(tr);
         lastTs = Math.max(lastTs, p.ts || 0);
-        sumPercent   += p.avgPercent   || 0;
+        sumPercent += p.avgPercent || 0;
         sumInsideSec += p.avgInsideSec || 0;
       });
 
