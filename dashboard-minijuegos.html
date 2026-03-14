@@ -241,7 +241,6 @@
       font-weight:700;
     }
 
-    /* Podio resumen */
     #summaryPodium{
       display:none;
       margin-top:10px;
@@ -271,7 +270,6 @@
       font-weight:700;
     }
 
-    /* ===== Botón Fullscreen ===== */
     .fs-btn{
       display:inline-flex;
       align-items:center;
@@ -300,7 +298,6 @@
       line-height:1;
     }
 
-    /* ===================== MODO TV ===================== */
     body.tv-mode{
       padding:10px;
     }
@@ -458,10 +455,7 @@
           Nadie ha terminado todavía este mini-juego. Cuando lleguen resultados, aparecerán aquí.
         </div>
 
-        <!-- Vista de podio resumen (summary) -->
-        <div id="summaryPodium">
-          <!-- Se rellena por JS -->
-        </div>
+        <div id="summaryPodium"></div>
       </section>
 
       <aside class="card">
@@ -558,7 +552,6 @@
     const statUpdated = document.getElementById("statUpdated");
     const statUpdatedHelp = document.getElementById("statUpdatedHelp");
 
-    // ================= Fullscreen =================
     const btnFullscreen = document.getElementById("btnFullscreen");
     const fsIcon = document.getElementById("fsIcon");
     const fsLabel = document.getElementById("fsLabel");
@@ -588,7 +581,6 @@
           await document.exitFullscreen();
         }
       }catch(_e){
-        // Algunos navegadores pueden bloquear la llamada si no es un gesto de usuario válido
       }finally{
         updateFsUI();
       }
@@ -599,8 +591,6 @@
       document.addEventListener("fullscreenchange", updateFsUI);
       updateFsUI();
     }
-
-    // =================================================
 
     let currentResultsUnsub = null;
     let currentMode = "cata";
@@ -689,20 +679,44 @@
       }
     }
 
-    // Helpers para resumen (Top 3 de ambos juegos)
+    function normalizeBubbleEntry(id, r){
+      const totalScore = Number(r?.totalScore ?? 0);
+      const totalMistakes = Number(r?.totalMistakes ?? 0);
+      const totalMissed = Number(r?.totalMissed ?? 0);
+      const avgAccuracy = Number(r?.avgAccuracy ?? 0);
+      const winesPlayed = Number(r?.winesPlayed ?? 0);
+      const ts = Number(r?.ts ?? 0);
+
+      const bubblePoints = (totalScore * 2) - (totalMistakes * 2) - totalMissed;
+
+      return {
+        id,
+        name: (r && r.name) || id,
+        winesPlayed,
+        totalScore,
+        totalMistakes,
+        totalMissed,
+        avgAccuracy,
+        ts,
+        bubblePoints
+      };
+    }
+
+    function compareBubblePlayers(a, b){
+      if(b.bubblePoints !== a.bubblePoints) return b.bubblePoints - a.bubblePoints;
+      if(b.avgAccuracy !== a.avgAccuracy) return b.avgAccuracy - a.avgAccuracy;
+      if(b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+      if(a.totalMistakes !== b.totalMistakes) return a.totalMistakes - b.totalMistakes;
+      if(a.totalMissed !== b.totalMissed) return a.totalMissed - b.totalMissed;
+      return (a.ts || 0) - (b.ts || 0);
+    }
+
     function buildTop3FromBubbles(results){
-      const arr = Object.values(results || {}).filter(r => r && typeof r === "object");
-      arr.sort((a,b)=>{
-        const aScore = a.totalScore || 0;
-        const bScore = b.totalScore || 0;
-        if(bScore !== aScore) return bScore - aScore;
-        const aAcc = a.avgAccuracy || 0;
-        const bAcc = b.avgAccuracy || 0;
-        if(bAcc !== aAcc) return bAcc - aAcc;
-        const aTs = a.ts || 0;
-        const bTs = b.ts || 0;
-        return aTs - bTs;
-      });
+      const arr = Object.entries(results || {})
+        .map(([id, r]) => normalizeBubbleEntry(id, r))
+        .filter(r => r && typeof r === "object");
+
+      arr.sort(compareBubblePlayers);
       return arr.slice(0, 3);
     }
 
@@ -770,13 +784,13 @@
         </div>
       `;
 
-      // Estadísticas laterales sencillas
       statPlayers.textContent = String(
         new Set([
           ...Object.keys(bubblesResultsCache || {}),
           ...Object.keys(lineaResultsCache || {})
         ]).size
       );
+
       statWinner.textContent = [
         topB[0]?.name || topB[0]?.sessionId,
         topL[0]?.name || topL[0]?.sessionId
@@ -786,7 +800,6 @@
       statMetricValue.textContent = "Top 3 de cada juego";
       statMetricHelp.textContent = "Se calcula con los rankings de Bubble Pop y Test alcoholemia.";
 
-      // Última actualización combinada
       let lastTs = 0;
       Object.values(bubblesResultsCache || {}).forEach(r => { lastTs = Math.max(lastTs, r?.ts || 0); });
       Object.values(lineaResultsCache || {}).forEach(r => { lastTs = Math.max(lastTs, r?.ts || 0); });
@@ -816,30 +829,19 @@
       setGamePill("bubbles");
       rankingIcon.textContent = "🫧";
       rankingTitle.textContent = "Ranking · Bubble Pop de Aromas";
-      rankingSub.textContent = "Ordenado por aciertos totales (y precisión media como desempate).";
+      rankingSub.textContent = "Ordenado por puntos Bubble: (aciertos × 2) - (fallos × 2) - escapadas.";
 
       tableWrap.style.display = "";
       summaryPodium.style.display = "none";
 
-      mainMetricHead.textContent = "Aciertos totales";
-      secondaryMetricHead.textContent = "Precisión media / Fallos";
+      mainMetricHead.textContent = "Puntos Bubble";
+      secondaryMetricHead.textContent = "Precisión / ✅ / ❌ / 💨";
 
-      let entries = Object.entries(results || {}).map(([id, r]) => ({
-        id,
-        name: (r && r.name) || id,
-        winesPlayed: r?.winesPlayed ?? 0,
-        totalScore: r?.totalScore ?? 0,
-        totalMistakes: r?.totalMistakes ?? 0,
-        totalMissed: r?.totalMissed ?? 0,
-        avgAccuracy: r?.avgAccuracy ?? 0,
-        ts: r?.ts ?? 0
-      }));
+      let entries = Object.entries(results || {})
+        .map(([id, r]) => normalizeBubbleEntry(id, r))
+        .filter(r => r && typeof r === "object");
 
-      entries.sort((a,b)=>{
-        if(b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
-        if(b.avgAccuracy !== a.avgAccuracy) return b.avgAccuracy - a.avgAccuracy;
-        return (b.ts||0) - (a.ts||0);
-      });
+      entries.sort(compareBubblePlayers);
       entries = entries.slice(0, 50);
 
       clearRanking();
@@ -849,7 +851,7 @@
         emptyMsg.textContent = "Todavía no hay resultados guardados de Bubble Pop.";
         statPlayers.textContent = "0";
         statWinner.textContent = "–";
-        statMetricLabel.textContent = "Precisión media (%)";
+        statMetricLabel.textContent = "Media Bubble";
         statMetricValue.textContent = "–";
         statMetricHelp.textContent = "Se actualizará cuando haya resultados.";
         statUpdated.textContent = "–";
@@ -858,32 +860,36 @@
       }
 
       let lastTs = 0;
+      let sumBubblePoints = 0;
       let sumAcc = 0;
+
       entries.forEach((p, idx)=>{
         const tr = document.createElement("tr");
         if(idx === 0) tr.classList.add("leader");
         tr.innerHTML = `
           <td class="td-rank">${idx === 0 ? '<span class="trophy">🏆</span>' : idx+1}</td>
           <td class="td-name">${p.name}</td>
-          <td><strong>${p.totalScore}</strong> aciertos</td>
+          <td><strong>${p.bubblePoints}</strong> pts</td>
           <td class="td-secondary">
-            🎯 ${p.avgAccuracy}% · ❌ ${p.totalMistakes} · 💨 ${p.totalMissed}
+            🎯 ${p.avgAccuracy}% · ✅ ${p.totalScore} · ❌ ${p.totalMistakes} · 💨 ${p.totalMissed}
           </td>
         `;
         rankingBody.appendChild(tr);
         lastTs = Math.max(lastTs, p.ts || 0);
+        sumBubblePoints += p.bubblePoints || 0;
         sumAcc += p.avgAccuracy || 0;
       });
 
+      const avgBubblePoints = Math.round(sumBubblePoints / entries.length);
       const avgAcc = Math.round(sumAcc / entries.length);
 
       statPlayers.textContent = String(entries.length);
       statWinner.textContent = entries[0].name;
-      statMetricLabel.textContent = "Precisión media (%)";
-      statMetricValue.textContent = `${avgAcc}%`;
-      statMetricHelp.textContent = "Promedio de precisión entre todos los jugadores.";
+      statMetricLabel.textContent = "Media Bubble";
+      statMetricValue.textContent = `${avgBubblePoints} pts · ${avgAcc}%`;
+      statMetricHelp.textContent = "Promedio global de puntos Bubble y precisión.";
       statUpdated.textContent = localTimeString(lastTs);
-      gameHint.textContent = "Mini-juego activo: Bubble Pop de Aromas. Gana quien acierta más aromas.";
+      gameHint.textContent = "Mini-juego activo: Bubble Pop de Aromas. Gana quien logra más puntos Bubble.";
     }
 
     function renderLineaRanking(results){
@@ -962,7 +968,6 @@
       gameHint.textContent = "Mini-juego activo: Test alcoholemia. Gana quien mantiene mejor el punto en el tramo verde.";
     }
 
-    // Escuchar qué mini-juego está activo
     const currentScreenRef = ref(db, "miniGames/currentScreen");
     onValue(currentScreenRef, snap => {
       const val = snap.val() || "cata";
@@ -993,9 +998,7 @@
       }
     });
 
-    // Estado inicial
     renderNoGame();
   </script>
 </body>
 </html>
-
